@@ -4,12 +4,12 @@
     "lib": [
       "ES2022"
     ], // ES2020 in earlier versions
-    "module": "nodenext", //ESNext 
+    "module": "NodeNext", //ESNext 
     "moduleResolution": "nodenext",
     "target": "ES2022", // ES2020 in earlier versions
     "esModuleInterop": true,
     // File Layout
-    "rootDir": "./src",
+    "rootDir": "./",
     // "outDir": "./dist",
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
@@ -22,6 +22,8 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
