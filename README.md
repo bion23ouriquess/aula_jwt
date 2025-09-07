@@ -49,3 +49,16 @@ Código
 npm run dev
 npm run build
 npm start
+
+## Build Process
+
+For development (hot reload, real-time changes):
+```
+  docker build -t auth_jwt:dev --target dev .
+```
+
+For production (compiled code, production-only dependencies):
+```
+docker build -t auth_jwt:prod --target prod .
+docker run -p 3000:3000 auth_jwt:prod
+```
