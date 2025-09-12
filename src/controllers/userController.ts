@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
 import { prismaClient } from "../../prisma/prisma.ts";
+import { signAccessToken, signRefreshToken } from "../utils/jwt.ts";
 
 export const register = async (
   req: Request,
@@ -40,9 +41,6 @@ export const register = async (
   return res.status(400).send("Not Found");
 };
 
-// Ambiente de produção: use variáveis de ambiente
-const ACCESS_TOKEN_SECRET = "chaveSuperSecreta123";
-const REFRESH_TOKEN_SECRET = "chaveMuitoMuitoSecreta456";
 export const login = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { email, password } = req.body;
@@ -51,15 +49,12 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
         return res.status(401).json({ error: "Credenciais inválidas" });
     } 
     // Gerar access token (curta duração)
-    const accessToken = jwt.sign(
-      { userId: user.id, email: user.email, name: user.name },
-      ACCESS_TOKEN_SECRET,
-      { expiresIn: "15m" }
-    ); 
+    const accessToken = signAccessToken(
+      { userId: user.id, email: user.email, name: user.name }
+    )
+
     // Gerar refresh token (longa duração)
-    const refreshToken = jwt.sign({ userId: user.id }, REFRESH_TOKEN_SECRET, {
-      expiresIn: "7d",
-    }); 
+    const refreshToken = signRefreshToken({ userId: user.id })
     // Armazenar refresh token no banco de dados
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
