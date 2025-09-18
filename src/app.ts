@@ -1,7 +1,7 @@
 import express from 'express';
 import { prismaClient, } from '../prisma/prisma.ts';
 import type { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { login, register } from './controllers/userController.ts';
+import { login, logout, register } from './controllers/authController.ts';
 
 enum userColumns {
     NAME = "name",
@@ -23,6 +23,8 @@ app.post("/login", login)
 app.get('/', (req, res) => {
     res.send('Hello world');
 });
+
+app.post('/logout', logout);
 
 app.get('/users', async (req, res) => {
     try {

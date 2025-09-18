@@ -25,9 +25,10 @@ model user {
 // token table
 model token {
   id        Int      @id @default(autoincrement())
-  token     String
-  type      String
+  token     String   @db.VarChar(255)
+  type      String   
   userId    Int
+  revoked   Boolean  @default(value: false)
   expiresAt DateTime
   user      user     @relation(fields: [userId], references: [id])
 }
