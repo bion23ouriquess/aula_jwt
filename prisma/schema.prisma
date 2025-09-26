@@ -15,20 +15,33 @@ datasource db {
 
 // user table
 model user {
-  id       Int     @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
-  email    String  @unique
+  email    String    @unique
   password String
   token    token[]
+  pedido  pedido[]
 }
 
 // token table
 model token {
   id        Int      @id @default(autoincrement())
   token     String   @db.VarChar(255)
-  type      String   
+  type      String
   userId    Int
   revoked   Boolean  @default(value: false)
   expiresAt DateTime
   user      user     @relation(fields: [userId], references: [id])
 }
+
+// pedido
+model pedido {
+  id        Int      @id @default(autoincrement())
+  valor     Decimal
+  status    String
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      user     @relation(fields: [userId], references: [id])
+}
+
