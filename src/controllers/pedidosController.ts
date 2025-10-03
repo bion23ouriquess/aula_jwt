@@ -1,6 +1,8 @@
 import { prismaClient } from "../../prisma/prisma.ts";
 import type { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import type { Request, Response } from "express";
+import { verifyAccess } from "../utils/jwt.ts";
+import { simuladorService } from "../services/simuladorService.ts";
 
 enum pedidoColumns {
   VALOR = "valor",
@@ -12,21 +14,60 @@ enum pedidoColumns {
 
 export const createPedido = async (req: Request, res: Response) => {
   const { body } = req;
+  const { produtos, ...dados } = body;
   try {
+    // TO-DO -> ARMAZENAR DADOS DO USUARIO EM FORMATO DE CACHE OU ALGO PARECIDO
+    const token = req?.headers?.authorization?.slice("Bearer ".length);
+    const payload = verifyAccess(token || "");
+    // buscar produtos do pedido no banco
+    const produtosDb = await prismaClient.produto.findMany({
+      where: { id: { in: produtos } },
+    });
     const pedido = await prismaClient.pedido.create({
-      data: body,
+      data: {
+        ...dados,
+        userId: payload.userId,
+        produto: {
+          create: produtosDb.map((produto) => {
+            return {
+              nome: produto.nome,
+              preco: produto.preco,
+              descricao: produto.descricao,
+              status: produto.status,
+              estoque: produto.estoque,
+              userId: produto.userId,
+            };
+          }),
+        },
+      },
+      include: {
+        produto: true,
+      },
     });
 
-    // CRIACAO DO REGISTRO NA TABELA RELACAO
+    const resultado = await simuladorService.enviarPedidoParaFila(pedido);
+    if (!resultado) {
+      res.status(400).send("Erro ao enviar para o simulador/bancada");
+    }
+    console.log("Enviado para simulador/bancada com sucesso!");
     res.status(201).json(pedido);
   } catch (error) {
     res.status(500).send(`Erro no servidor: ${error}`);
   }
 };
 
-export const listPedidos = async (_: Request, res: Response) => {
+export const listPedidos = async (req: Request, res: Response) => {
   try {
-    const pedidos = await prismaClient.pedido.findMany();
+    const token = req?.headers?.authorization?.slice("Bearer ".length);
+    const payload = verifyAccess(token || "");
+    const pedidos = await prismaClient.pedido.findMany({
+      where: {
+        userId: payload.userId,
+      },
+      include: {
+        produto: true,
+      },
+    });
     res.json(pedidos);
   } catch (error) {
     console.log(error);
@@ -105,5 +146,25 @@ export const deletePedido = async (req: Request, res: Response) => {
     }
     console.log(error);
     res.status(500).send(`Erro no servidor: ${error}`);
+  }
+};
+
+export const updateStatus = async (req: Request, res: Response) => {
+  const { params, query } = req;
+  try {
+    const pedidoUpdate = await prismaClient.pedido.update({
+      where: { id: Number(params.id) },
+      data: {
+        status: String(query.status) || "",
+      },
+    });
+
+    return res.status(200).json({
+      message: "Pedido atualizado!",
+      data: pedidoUpdate,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
   }
 };

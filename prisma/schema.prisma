@@ -20,7 +20,8 @@ model user {
   email    String    @unique
   password String
   token    token[]
-  pedido  pedido[]
+  pedido   pedido[]
+  prduto   produto[]
 }
 
 // token table
@@ -34,6 +35,21 @@ model token {
   user      user     @relation(fields: [userId], references: [id])
 }
 
+//produto
+model produto {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  descricao String
+  preco     Float
+  status    String
+  estoque   Int
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      user     @relation(fields: [userId], references: [id])
+  pedido   pedido[]   @relation("produtosEmPedidos")
+}
+
 // pedido
 model pedido {
   id        Int      @id @default(autoincrement())
@@ -43,5 +59,6 @@ model pedido {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      user     @relation(fields: [userId], references: [id])
-}
+  produto   produto[]   @relation("produtosEmPedidos")
 
+}
