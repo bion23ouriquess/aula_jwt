@@ -5,15 +5,16 @@ class SimuladorService {
   constructor() {}
   async enviarPedidoParaFila(pedido: any) {
     try {
+      const pedidoId = pedido.id;
       const result = await axios({
         method: "post",
         url: "http://52.1.197.112:3000/queue/items",
         data: {
           payload: {
-            orderId: pedido.id,
-            order: pedido,
+            orderId: pedidoId,
+            order: { bloco: pedido.bloco },
           },
-          callbackUrl: "http://localhost:3000/pedidos",
+          callbackUrl: `http://localhost:3000/pedidos/${pedidoId}`,
         },
       });
 

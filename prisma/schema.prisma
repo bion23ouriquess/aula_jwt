@@ -21,7 +21,7 @@ model user {
   password String
   token    token[]
   pedido   pedido[]
-  prduto   produto[]
+  produto   produto[]
 }
 
 // token table
@@ -38,27 +38,31 @@ model token {
 //produto
 model produto {
   id        Int      @id @default(autoincrement())
-  nome      String
-  descricao String
-  preco     Float
+  marca     String
+  modelo    String
+  ano       Int
+  cor       String
+  motor     String
+  cambio    String
+  preco     Decimal
   status    String
+  bloco     Json
   estoque   Int
   userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      user     @relation(fields: [userId], references: [id])
-  pedido   pedido[]   @relation("produtosEmPedidos")
+  pedido    pedido[] @relation("produtosEmPedidos")
 }
 
 // pedido
 model pedido {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   valor     Decimal
   status    String
   userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      user     @relation(fields: [userId], references: [id])
-  produto   produto[]   @relation("produtosEmPedidos")
-
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      user      @relation(fields: [userId], references: [id])
+  produto   produto[] @relation("produtosEmPedidos")
 }

@@ -29,13 +29,9 @@ export const createPedido = async (req: Request, res: Response) => {
         userId: payload.userId,
         produto: {
           create: produtosDb.map((produto) => {
+            const { id, ...restProductData} = produto
             return {
-              nome: produto.nome,
-              preco: produto.preco,
-              descricao: produto.descricao,
-              status: produto.status,
-              estoque: produto.estoque,
-              userId: produto.userId,
+              ...restProductData,
             };
           }),
         },

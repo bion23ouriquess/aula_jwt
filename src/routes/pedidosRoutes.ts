@@ -19,6 +19,6 @@ pedidosRouter.put("/pedidos/:id", updatePedido);
 
 pedidosRouter.delete("/pedidos/:id", deletePedido);
 
-pedidosRouter.patch("/pedidos/:id", updateStatus);
+pedidosRouter.post("/pedidos/:id", updateStatus);
 
 export default pedidosRouter;

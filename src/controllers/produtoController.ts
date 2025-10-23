@@ -4,9 +4,14 @@ import type { Request, Response } from "express";
 import { verifyAccess } from "../utils/jwt.ts";
 
 enum produtoColumns {
-  NOME = "nome",
-  DESCRICAO = "descricao",
+  MARCA = "marca",
+  MODELO = "modelo",
+  ANO = "ano",
+  COR = "cor",
+  MOTOR = "motor",
+  CAMBIO = "cambio",
   PRECO = "preco",
+  BLOCO = "bloco",
   ESTOQUE = "estoque",
   STATUS = "status",
 }
@@ -71,8 +76,12 @@ export const updateProduto = async (req: Request, res: Response) => {
     for (const key of bodyKeys) {
       if (
         key !== produtoColumns.PRECO &&
-        key !== produtoColumns.NOME &&
-        key !== produtoColumns.DESCRICAO &&
+        key !== produtoColumns.MARCA &&
+        key !== produtoColumns.MODELO &&
+        key !== produtoColumns.ANO &&
+        key !== produtoColumns.CAMBIO &&
+        key !== produtoColumns.MOTOR &&
+        key !== produtoColumns.COR &&
         key !== produtoColumns.ESTOQUE &&
         key !== produtoColumns.STATUS
       )
