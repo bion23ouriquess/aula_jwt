@@ -27,21 +27,18 @@ export const createPedido = async (req: Request, res: Response) => {
       data: {
         ...dados,
         userId: payload.userId,
-        produto: {
-          create: produtosDb.map((produto) => {
-            const { id, ...restProductData} = produto
-            return {
-              ...restProductData,
-            };
-          }),
-        },
-      },
-      include: {
-        produto: true,
-      },
+      }
     });
 
-    const resultado = await simuladorService.enviarPedidoParaFila(pedido);
+    for (const produto of produtosDb) {
+      await prismaClient.produtosEmPedidos.create({
+        data: {
+          id_pedido: pedido.id,
+          id_produto: produto.id
+        }
+      })
+    }
+    const resultado = await simuladorService.enviarPedidoParaFila(pedido, produtosDb);
     if (!resultado) {
       res.status(400).send("Erro ao enviar para o simulador/bancada");
     }

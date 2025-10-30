@@ -3,7 +3,7 @@ import { env } from "../env.ts";
 
 export type JwtPayload = string | Buffer | object;
 
-export function signAccessToken(payload:JwtPayload) {
+export function signAccessToken(payload: JwtPayload) {
   return jwt.sign(payload, env.accessSecret, { expiresIn: Number(env.accessTtl) });
 }
 export function signRefreshToken(payload: JwtPayload) {

@@ -8,7 +8,7 @@ enum userColumns {
     PASSWORD = "password"
 }
 
-export const listUsers = async  (_:Request, res:Response) => {
+export const listUsers = async (_: Request, res: Response) => {
     try {
         const users = await prismaClient.user.findMany();
         res.json(users);
@@ -18,7 +18,7 @@ export const listUsers = async  (_:Request, res:Response) => {
     }
 }
 
-export const listUserById = async (req:Request, res:Response) => {
+export const listUserById = async (req: Request, res: Response) => {
     try {
         const { params } = req;
 
@@ -41,13 +41,13 @@ export const listUserById = async (req:Request, res:Response) => {
     }
 }
 
-export const updateUser = async (req:Request, res:Response) => {
+export const updateUser = async (req: Request, res: Response) => {
     try {
         const { params, body } = req
-        const bodyKeys:string[] = Object.keys(body)
+        const bodyKeys: string[] = Object.keys(body)
         for (const key of bodyKeys) {
-            if (key !== userColumns.NAME && 
-                key !== userColumns.PASSWORD && 
+            if (key !== userColumns.NAME &&
+                key !== userColumns.PASSWORD &&
                 key !== userColumns.EMAIL) return res.status(404).send("Colunas não existentes")
         }
         const user = await prismaClient.user.update({
@@ -69,11 +69,11 @@ export const updateUser = async (req:Request, res:Response) => {
     }
 }
 
-export const deleteUser =  async(req:Request, res:Response)=>{
+export const deleteUser = async (req: Request, res: Response) => {
     try {
-        const {params} = req
+        const { params } = req
         await prismaClient.user.delete({
-            where:{
+            where: {
                 id: Number(params.id)
             }
         })

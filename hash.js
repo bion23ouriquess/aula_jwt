@@ -9,7 +9,8 @@ bcrypt.compare(senha, hash).then(res => console.log(res))
 bcrypt.compare(senha, hash2).then(res => console.log(res))
 bcrypt.
 
-console.log(senha)
+
+    console.log(senha)
 console.log(hash)
 console.log(hash2)
 

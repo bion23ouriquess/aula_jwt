@@ -21,7 +21,7 @@ model user {
   password String
   token    token[]
   pedido   pedido[]
-  produto   produto[]
+  produto  produto[]
 }
 
 // token table
@@ -37,32 +37,43 @@ model token {
 
 //produto
 model produto {
-  id        Int      @id @default(autoincrement())
-  marca     String
-  modelo    String
-  ano       Int
-  cor       String
-  motor     String
-  cambio    String
-  preco     Decimal
-  status    String
-  bloco     Json
-  estoque   Int
-  userId    Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      user     @relation(fields: [userId], references: [id])
-  pedido    pedido[] @relation("produtosEmPedidos")
+  id                Int                 @id @default(autoincrement())
+  marca             String
+  modelo            String
+  ano               Int
+  cor               String
+  motor             String
+  cambio            String
+  preco             Decimal
+  status            String
+  bloco             Json
+  estoque           Int
+  userId            Int
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  user              user                @relation(fields: [userId], references: [id])
+  pedido            pedido[]
+  produtosEmPedidos produtosEmPedidos[]
 }
 
 // pedido
 model pedido {
-  id        Int       @id @default(autoincrement())
-  valor     Decimal
-  status    String
-  userId    Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  user      user      @relation(fields: [userId], references: [id])
-  produto   produto[] @relation("produtosEmPedidos")
+  id                Int                 @id @default(autoincrement())
+  valor             Decimal
+  status            String
+  userId            Int
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  user              user                @relation(fields: [userId], references: [id])
+  produto           produto[]
+  produtosEmPedidos produtosEmPedidos[]
+}
+
+model produtosEmPedidos {
+  id_pedido  Int
+  id_produto Int
+  pedido     pedido  @relation(fields: [id_pedido], references: [id])
+  produto    produto @relation(fields: [id_produto], references: [id])
+
+  @@id([id_pedido, id_produto])
 }

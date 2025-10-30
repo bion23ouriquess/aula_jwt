@@ -2,8 +2,8 @@ import axios from "axios";
 
 class SimuladorService {
   // TO-DO TIPAR PEDIDO
-  constructor() {}
-  async enviarPedidoParaFila(pedido: any) {
+  constructor() { }
+  async enviarPedidoParaFila(pedido: any, produtos) {
     try {
       const pedidoId = pedido.id;
       const result = await axios({
@@ -12,7 +12,9 @@ class SimuladorService {
         data: {
           payload: {
             orderId: pedidoId,
-            order: { bloco: pedido.bloco },
+            order: produtos.map((produto) => {
+              return { bloco: produto.bloco };
+            }),
           },
           callbackUrl: `http://localhost:3000/pedidos/${pedidoId}`,
         },

@@ -135,7 +135,7 @@ export const logout = async (
       storedRefreshToken.expiresAt < new Date()
     )
       return res.status(401).json({ error: "invalid refresh token" });
-  
+
     await prismaClient.token.updateMany({
       where: { id: storedRefreshToken?.id ?? 0 },
       data: { revoked: true },
@@ -143,7 +143,7 @@ export const logout = async (
   } catch (error) {
     res.status(400).json(error)
   }
-  
+
   return res.status(200).json("Usuário deslogado!");
 
 };
